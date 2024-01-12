@@ -1,0 +1,44 @@
+{{- if .Values.seedAddr }}
+{{- if .Values.webrtc.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atm0s-media-webrtc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atm0s-media-webrtc
+  template:
+    metadata:
+      labels:
+        app: atm0s-media-webrtc
+    spec:
+      hostNetwork: true
+      containers:
+        - name: atm0s-media-webrtc 
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["--http-port={{ .Values.webrtc.service.httpPort }}", "--sdn-port={{ .Values.webrtc.service.sdnPort }}", "--node-id={{ .Values.webrtc.nodeId }}", "--seeds={{ .Values.seedAddr }}", "webrtc"]
+          env: 
+            - name: RUST_LOG
+              value: {{ .Values.webrtc.logLevel }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.webrtc.service.httpPort }}
+              protocol: TCP
+            - name: sdn
+              containerPort: {{ .Values.webrtc.service.sdnPort }}
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /node-info/
+          #     port: http
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 5
+          resources:
+            requests:
+              cpu: {{ .Values.webrtc.cpuRequest }}
+              memory: {{ .Values.webrtc.memoryRequest }}
+{{- end}}      
+{{- end}}

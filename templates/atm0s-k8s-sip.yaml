@@ -1,0 +1,38 @@
+{{- if .Values.seedAddr }}
+{{- if .Values.sip.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atm0s-media-sip
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atm0s-media-sip
+  template:
+    metadata:
+      labels:
+        app: atm0s-media-sip
+    spec:
+      hostNetwork: true
+      containers:
+        - name: atm0s-media-sip 
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["--http-port={{ .Values.sip.service.httpPort }}", "--sdn-port={{ .Values.sip.service.sdnPort }}", "--node-id={{ .Values.sip.nodeId }}", "--seeds={{ .Values.seedAddr }}", "sip"]
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.sip.logLevel }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.sip.service.httpPort }}
+              protocol: TCP
+            - name: sdn
+              containerPort: {{ .Values.sip.service.sdnPort }}
+              protocol: TCP
+          resources:
+            requests:
+              cpu: {{ .Values.sip.cpuRequest }}
+              memory: {{ .Values.sip.memoryRequest }}
+{{- end}}
+{{- end}}

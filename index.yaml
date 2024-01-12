@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  atm0s-media-stack:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2024-01-12T16:27:29.129045+07:00"
+    description: Atm0s Media Stack Helm chart for Kubernetes
+    digest: fcf8f2ce27c1078de202b4ce0c442a77b505fd73508c81ef45ae1038d71fe084
+    name: atm0s-media-stack
+    type: application
+    urls:
+    - https://8xff.github.io/helm/atm0s-media-stack-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-01-12T16:27:29.128157+07:00"

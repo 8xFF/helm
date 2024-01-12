@@ -1,0 +1,55 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+spec:
+  selector:
+    app: atm0s-media-gateway
+  ports:
+    - protocol: TCP
+      port: 3000  
+      targetPort: http
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atm0s-media-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atm0s-media-gateway
+  template:
+    metadata:
+      labels:
+        app: atm0s-media-gateway
+    spec:
+      hostNetwork: true
+      containers:
+        - name: atm0s-media-gateway 
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["--http-port={{ .Values.gateway.service.httpPort }}", "--sdn-port={{ .Values.gateway.service.sdnPort }}", "--node-id={{ .Values.gateway.nodeId }}", "gateway"]
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.gateway.logLevel }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.gateway.service.httpPort }}
+              protocol: TCP
+            - name: sdn
+              containerPort: {{ .Values.gateway.service.sdnPort }}
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /node-info/
+          #     port: http
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 5
+          resources:
+            requests:
+              cpu: {{ .Values.gateway.cpuRequest }}
+              memory: {{ .Values.gateway.memoryRequest }}
+      
