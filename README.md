@@ -12,7 +12,9 @@ Atm0s Media Stack installs the following
 - **Helm v3** (https://helm.sh/docs/intro/install/)
 
 ## Installing the Chart
+
 Add the 8xFF repository to Helm:
+
 ```shell script
 helm repo add atm0s https://8xff.github.io/helm
 helm repo update
@@ -20,6 +22,7 @@ helm install atm0s-media-stack 8xff/atm0s-media-stack --set gateway.host={host}.
 ```
 
 ## Uninstalling the Chart
+
 ```sh
 helm delete atm0s-media-stack -n atm0s-media
 ```
