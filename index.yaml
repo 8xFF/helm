@@ -9,6 +9,6 @@ entries:
     name: atm0s-media-stack
     type: application
     urls:
-    - https://8xff.github.io/helm/atm0s-media-stack-0.1.0.tgz
+    - https://8xff.github.io/helm/charts/atm0s-media/atm0s-media-stack-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-12T16:27:29.128157+07:00"
+generated: "2024-01-15T10:28:06.978601+07:00"
