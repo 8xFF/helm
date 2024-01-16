@@ -1,4 +1,4 @@
-{{- if .Values.connector.innerNats.enabled}}
+{{- if .Values.connector.innerNats}}
 kind: Service
 apiVersion: v1
 metadata:

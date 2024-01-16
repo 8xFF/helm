@@ -2,8 +2,16 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gateway
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - {{ .Values.gateway.host }}
+    secretName: atm0s-gateway-cert
+
   rules:
   - host: {{ .Values.gateway.host }}
     http:

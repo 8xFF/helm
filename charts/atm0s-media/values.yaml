@@ -10,13 +10,22 @@ image:
 # You must provide a valid seed node address before enabling any other node
 # seedAddr: "0@/ip4/192.168.65.3/udp/3001/ip4/192.168.65.3/tcp/3001"
 
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
 
 gateway:
   nodeId: 0
+  # The hostname of the gateway
+  host: gateway.local
   cpuRequest: 50m
   memoryRequest: 100Mi
   logLevel: "info"
-  host: gateway.local
   service:
     httpPort: 3000
     sdnPort: 3001
@@ -26,9 +35,11 @@ connector:
   nodeId: 1
   cpuRequest: 50m
   memoryRequest: 100Mi
+  # The NATS URI to connect to
+  # This defaulted to the NATS server deployed with the chart
+  # If you are using a different NATS server, you must set this value for connector to work, and disable innerNats
   mqUri: "nats://nats"
-  innerNats:
-    enabled: true
+  innerNats: true
 
   logLevel: "info"
   service:
@@ -56,14 +67,3 @@ webrtc:
   service:
     httpPort: 3030
     sdnPort: 3031
-
-sip:
-  enabled: false
-  nodeId: 4
-  cpuRequest: 100m
-  memoryRequest: 200Mi
-  logLevel: "info"
-
-  service:
-    httpPort: 3040
-    sdnPort: 3041
