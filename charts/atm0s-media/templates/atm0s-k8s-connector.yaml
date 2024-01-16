@@ -15,11 +15,20 @@ spec:
         app: atm0s-media-connector
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: atm0s-media-connector 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--http-port={{ .Values.connector.service.httpPort }}", "--sdn-port={{ .Values.connector.service.sdnPort }}", "--node-id={{ .Values.connector.nodeId }}", "--seeds={{ .Values.seedAddr }}", "connector", "--mq-uri={{ .Values.connector.mqUri }}"]
+          args: 
+            - --http-port={{ .Values.connector.service.httpPort }}
+            {{- if .Values.connector.service.sdnPort }}
+            - --sdn-port={{ .Values.connector.service.sdnPort }}
+            {{- end }}
+            - --node-id={{ .Values.connector.nodeId }}
+            - --seeds={{ .Values.seedAddr }}
+            - connector
+            - --mq-uri={{ .Values.connector.mqUri }}
           env:
             - name: RUST_LOG
               value: {{ .Values.connector.logLevel }}
@@ -28,9 +37,11 @@ spec:
             - name: http
               containerPort: {{ .Values.connector.service.httpPort }}
               protocol: TCP
+            {{- if .Values.connector.service.sdnPort }}
             - name: sdn
               containerPort: {{ .Values.connector.service.sdnPort }}
               protocol: TCP
+            {{- end }}
           # livenessProbe:
           #   httpGet:
           #     path: /node-info/

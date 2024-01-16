@@ -33,7 +33,6 @@ connector:
   logLevel: "info"
   service:
     httpPort: 3010
-    sdnPort: 3011
 
 rtmp:
   enabled: false
@@ -44,10 +43,9 @@ rtmp:
 
   service:
     httpPort: 3020
-    sdnPort: 3021
 
 webrtc:
-  enabled: false
+  enabled: true
   nodeId: 3
   cpuRequest: 200m
   memoryRequest: 500Mi
@@ -55,7 +53,6 @@ webrtc:
 
   service:
     httpPort: 3030
-    sdnPort: 3031
 
 sip:
   enabled: false
@@ -66,4 +63,3 @@ sip:
 
   service:
     httpPort: 3040
-    sdnPort: 3041

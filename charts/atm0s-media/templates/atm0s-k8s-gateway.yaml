@@ -27,11 +27,18 @@ spec:
         app: atm0s-media-gateway
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: atm0s-media-gateway 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--http-port={{ .Values.gateway.service.httpPort }}", "--sdn-port={{ .Values.gateway.service.sdnPort }}", "--node-id={{ .Values.gateway.nodeId }}", "gateway"]
+          args: 
+            - --http-port={{ .Values.gateway.service.httpPort }}
+            {{- if .Values.gateway.service.sdnPort }}
+            - --sdn-port={{ .Values.gateway.service.sdnPort }}
+            {{- end}}
+            - --node-id={{ .Values.gateway.nodeId }}
+            - gateway
           env:
             - name: RUST_LOG
               value: {{ .Values.gateway.logLevel }}

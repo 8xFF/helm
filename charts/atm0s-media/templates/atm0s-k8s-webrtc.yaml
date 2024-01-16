@@ -15,11 +15,19 @@ spec:
         app: atm0s-media-webrtc
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: atm0s-media-webrtc 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--http-port={{ .Values.webrtc.service.httpPort }}", "--sdn-port={{ .Values.webrtc.service.sdnPort }}", "--node-id={{ .Values.webrtc.nodeId }}", "--seeds={{ .Values.seedAddr }}", "webrtc"]
+          args:
+            - --seeds={{ .Values.seedAddr }}
+            - --http-port={{ .Values.webrtc.service.httpPort }}
+            {{- if .Values.webrtc.service.sdnPort }}
+            - --sdn-port={{ .Values.webrtc.service.sdnPort }}
+            {{- end}}
+            - --node-id={{ .Values.webrtc.nodeId}}
+            - webrtc          
           env: 
             - name: RUST_LOG
               value: {{ .Values.webrtc.logLevel }}
@@ -27,9 +35,11 @@ spec:
             - name: http
               containerPort: {{ .Values.webrtc.service.httpPort }}
               protocol: TCP
+            {{- if .Values.webrtc.service.sdnPort }}
             - name: sdn
               containerPort: {{ .Values.webrtc.service.sdnPort }}
               protocol: TCP
+            {{- end}}
           # livenessProbe:
           #   httpGet:
           #     path: /node-info/
