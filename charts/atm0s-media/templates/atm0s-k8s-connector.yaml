@@ -22,9 +22,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: 
             - --http-port={{ .Values.connector.service.httpPort }}
-            {{- if .Values.connector.service.sdnPort }}
             - --sdn-port={{ .Values.connector.service.sdnPort }}
-            {{- end }}
             - --node-id={{ .Values.connector.nodeId }}
             - --seeds={{ .Values.seedAddr }}
             - connector
@@ -37,11 +35,9 @@ spec:
             - name: http
               containerPort: {{ .Values.connector.service.httpPort }}
               protocol: TCP
-            {{- if .Values.connector.service.sdnPort }}
             - name: sdn
               containerPort: {{ .Values.connector.service.sdnPort }}
               protocol: TCP
-            {{- end }}
           # livenessProbe:
           #   httpGet:
           #     path: /node-info/

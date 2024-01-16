@@ -23,9 +23,7 @@ spec:
           args:
             - --seeds={{ .Values.seedAddr }}
             - --http-port={{ .Values.webrtc.service.httpPort }}
-            {{- if .Values.webrtc.service.sdnPort }}
             - --sdn-port={{ .Values.webrtc.service.sdnPort }}
-            {{- end}}
             - --node-id={{ .Values.webrtc.nodeId}}
             - webrtc          
           env: 
@@ -35,11 +33,9 @@ spec:
             - name: http
               containerPort: {{ .Values.webrtc.service.httpPort }}
               protocol: TCP
-            {{- if .Values.webrtc.service.sdnPort }}
             - name: sdn
               containerPort: {{ .Values.webrtc.service.sdnPort }}
               protocol: TCP
-            {{- end}}
           # livenessProbe:
           #   httpGet:
           #     path: /node-info/

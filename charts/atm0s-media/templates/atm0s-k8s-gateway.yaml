@@ -34,9 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: 
             - --http-port={{ .Values.gateway.service.httpPort }}
-            {{- if .Values.gateway.service.sdnPort }}
             - --sdn-port={{ .Values.gateway.service.sdnPort }}
-            {{- end}}
             - --node-id={{ .Values.gateway.nodeId }}
             - gateway
           env:
