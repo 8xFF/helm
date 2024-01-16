@@ -15,11 +15,17 @@ spec:
         app: atm0s-media-rtmp
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: atm0s-media-rtmp 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--http-port={{ .Values.rtmp.service.httpPort }}", "--sdn-port={{ .Values.rtmp.service.sdnPort }}", "--node-id={{ .Values.rtmp.nodeId }}", "--seeds={{ .Values.seedAddr }}", "rtmp"]
+          args:
+            - --seeds={{ .Values.seedAddr }}
+            - --http-port={{ .Values.rtmp.service.httpPort }}
+            - --sdn-port={{ .Values.rtmp.service.sdnPort }}
+            - --node-id={{ .Values.rtmp.nodeId}}
+            - rtmp
           env:
             - name: RUST_LOG
               value: {{ .Values.rtmp.logLevel }}

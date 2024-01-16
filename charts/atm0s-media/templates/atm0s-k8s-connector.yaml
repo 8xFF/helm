@@ -15,11 +15,18 @@ spec:
         app: atm0s-media-connector
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: atm0s-media-connector 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--http-port={{ .Values.connector.service.httpPort }}", "--sdn-port={{ .Values.connector.service.sdnPort }}", "--node-id={{ .Values.connector.nodeId }}", "--seeds={{ .Values.seedAddr }}", "connector", "--mq-uri={{ .Values.connector.mqUri }}"]
+          args: 
+            - --http-port={{ .Values.connector.service.httpPort }}
+            - --sdn-port={{ .Values.connector.service.sdnPort }}
+            - --node-id={{ .Values.connector.nodeId }}
+            - --seeds={{ .Values.seedAddr }}
+            - connector
+            - --mq-uri={{ .Values.connector.mqUri }}
           env:
             - name: RUST_LOG
               value: {{ .Values.connector.logLevel }}

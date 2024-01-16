@@ -15,11 +15,17 @@ spec:
         app: atm0s-media-sip
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: atm0s-media-sip 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: ["--http-port={{ .Values.sip.service.httpPort }}", "--sdn-port={{ .Values.sip.service.sdnPort }}", "--node-id={{ .Values.sip.nodeId }}", "--seeds={{ .Values.seedAddr }}", "sip"]
+          args:
+            - --seeds={{ .Values.seedAddr }}
+            - --http-port={{ .Values.sip.service.httpPort }}
+            - --sdn-port={{ .Values.sip.service.sdnPort }}
+            - --node-id={{ .Values.sip.nodeId}}
+            - sip
           env:
             - name: RUST_LOG
               value: {{ .Values.sip.logLevel }}
