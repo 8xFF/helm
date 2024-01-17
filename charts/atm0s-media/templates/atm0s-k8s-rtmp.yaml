@@ -13,6 +13,16 @@ spec:
       labels:
         app: atm0s-media-rtmp
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - am0s-media-rtmp
+            topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:

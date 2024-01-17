@@ -4,6 +4,7 @@ metadata:
   name: gateway
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    {{ toYaml .Values.annotations.default | indent 4 }}
 
 spec:
   ingressClassName: nginx

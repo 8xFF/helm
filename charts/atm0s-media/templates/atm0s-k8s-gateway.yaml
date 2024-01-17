@@ -25,6 +25,16 @@ spec:
       labels:
         app: atm0s-media-gateway
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - am0s-media-gateway
+            topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:

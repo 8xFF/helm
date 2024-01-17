@@ -22,7 +22,6 @@ serviceAccount:
 gateway:
   nodeId: 0
   # The hostname of the gateway
-  host: gateway.local
   cpuRequest: 50m
   memoryRequest: 100Mi
   logLevel: "info"
@@ -50,7 +49,7 @@ rtmp:
   enabled: false
   nodeId: 2
   cpuRequest: 200m
-  memoryRequest: 500Mi
+  memoryRequest: 200Mi
   logLevel: "info"
 
   service:
@@ -61,9 +60,14 @@ webrtc:
   enabled: false
   nodeId: 3
   cpuRequest: 200m
-  memoryRequest: 500Mi
+  memoryRequest: 200Mi
   logLevel: "info"
 
   service:
     httpPort: 3030
     sdnPort: 3031
+
+annotations:
+  default: {
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  }

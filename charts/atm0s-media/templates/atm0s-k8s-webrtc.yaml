@@ -13,6 +13,16 @@ spec:
       labels:
         app: atm0s-media-webrtc
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - am0s-media-webrtc
+            topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
