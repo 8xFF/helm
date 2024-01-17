@@ -22,6 +22,7 @@ serviceAccount:
 gateway:
   nodeId: 0
   # The hostname of the gateway
+  host: gateway.local
   cpuRequest: 50m
   memoryRequest: 100Mi
   logLevel: "info"
