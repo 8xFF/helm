@@ -1,4 +1,3 @@
-{{- if .Values.seedAddr }}
 {{- if .Values.connector.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -25,21 +24,32 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      initContainers:
+        - name: wait-seed-service
+          image: busybox
+          command: ['sh', '-c', "until nslookup gateway.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for gateway; sleep 2; done"]
+        - name: seed-service
+          image: busybox
+          command: ["/bin/sh", "-c", "wget -q -O - http://gateway:3000/node-info/ | grep -o '\"address\":\"[^\"]*\"' | sed 's/\"address\":\"\\(.*\\)\"/\\1/' > /etc/seed-address/address"]
+          volumeMounts:
+            - name: seed-address
+              mountPath: /etc/seed-address
+
       containers:
         - name: atm0s-media-connector 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: 
-            - --http-port={{ .Values.connector.service.httpPort }}
-            - --sdn-port={{ .Values.connector.service.sdnPort }}
-            - --node-id={{ .Values.connector.nodeId }}
-            - --seeds={{ .Values.seedAddr }}
-            - connector
-            - --mq-uri={{ .Values.connector.mqUri }}
+          command: 
+            - sh
+            - -c
+            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server --http-port={{ .Values.connector.service.httpPort }} --sdn-port={{ .Values.connector.service.sdnPort }} --node-id={{ .Values.connector.nodeId }} connector --mq-uri={{ .Values.connector.mqUri }}
           env:
             - name: RUST_LOG
               value: {{ .Values.connector.logLevel }}
-          
+          volumeMounts:
+            - name: seed-address
+              mountPath: /etc/seed-address
+              readOnly: true
           ports:
             - name: http
               containerPort: {{ .Values.connector.service.httpPort }}
@@ -47,15 +57,12 @@ spec:
             - name: sdn
               containerPort: {{ .Values.connector.service.sdnPort }}
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /node-info/
-          #     port: http
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 5
           resources:
             requests:
               cpu: {{ .Values.connector.cpuRequest }}
               memory: {{ .Values.connector.memoryRequest }}
-{{- end }}
+      volumes:
+        - name: seed-address
+          emptyDir:
+            sizeLimit: 1Mi 
 {{- end }}

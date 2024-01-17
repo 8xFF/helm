@@ -8,7 +8,7 @@ spec:
     app: atm0s-media-gateway
   ports:
     - protocol: TCP
-      port: 3000  
+      port: {{ .Values.gateway.service.httpPort }}
       targetPort: http
       name: http
 ---
@@ -56,12 +56,6 @@ spec:
             - name: sdn
               containerPort: {{ .Values.gateway.service.sdnPort }}
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /node-info/
-          #     port: http
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 5
           resources:
             requests:
               cpu: {{ .Values.gateway.cpuRequest }}

@@ -32,11 +32,4 @@ spec:
             - name: tcp 
               containerPort: 4222
               protocol: TCP
-          resources:
-            limits:
-              cpu: 100m
-              memory: 128Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
 {{- end}}
