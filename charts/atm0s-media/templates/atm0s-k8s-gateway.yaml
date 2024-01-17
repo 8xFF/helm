@@ -17,7 +17,6 @@ kind: Deployment
 metadata:
   name: atm0s-media-gateway
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: atm0s-media-gateway
