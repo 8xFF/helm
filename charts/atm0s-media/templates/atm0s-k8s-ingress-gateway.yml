@@ -24,3 +24,12 @@ spec:
             name: gateway
             port:
               name: http
+      {{- if .Values.secure.enabled }}
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: token
+            port:
+              name: http
+      {{- end }}

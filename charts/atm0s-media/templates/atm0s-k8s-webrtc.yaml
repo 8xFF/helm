@@ -41,7 +41,7 @@ spec:
           command: 
             - sh
             - -c
-            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server --http-port={{ .Values.webrtc.service.httpPort }} --sdn-port={{ .Values.webrtc.service.sdnPort }} --node-id={{ .Values.webrtc.nodeId }} webrtc
+            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server  webrtc
           volumeMounts:
             - name: seed-address
               mountPath: /etc/seed-address
@@ -49,6 +49,19 @@ spec:
           env: 
             - name: RUST_LOG
               value: {{ .Values.webrtc.logLevel }}
+            - name: HTTP_PORT
+              value: {{ .Values.webrtc.service.httpPort | quote}}
+            - name: SDN_PORT
+              value: {{ .Values.webrtc.service.sdnPort| quote }}
+            - name: NODE_ID
+              value: {{ .Values.webrtc.nodeId | quote}}
+            {{- if .Values.secure.enabled }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.webrtc.service.httpPort }}

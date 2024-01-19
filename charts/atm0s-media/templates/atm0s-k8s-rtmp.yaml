@@ -41,14 +41,27 @@ spec:
           command: 
             - sh
             - -c
-            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server --http-port={{ .Values.rtmp.service.httpPort }} --sdn-port={{ .Values.rtmp.service.sdnPort }} --node-id={{ .Values.rtmp.nodeId }} rtmp
+            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server rtmp
           volumeMounts:
             - name: seed-address
               mountPath: /etc/seed-address
               readOnly: true
           env:
             - name: RUST_LOG
-              value: {{ .Values.rtmp.logLevel }}
+              value: {{ .Values.rtmp.logLevel}}
+            - name: HTTP_PORT
+              value: {{ .Values.rtmp.service.httpPort | quote}}
+            - name: SDN_PORT
+              value: {{ .Values.rtmp.service.sdnPort | quote}}
+            - name: NODE_ID
+              value: {{ .Values.rtmp.nodeId| quote }}
+            {{- if .Values.secure.enabled }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.rtmp.service.httpPort }}

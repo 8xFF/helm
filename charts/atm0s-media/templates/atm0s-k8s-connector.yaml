@@ -42,10 +42,23 @@ spec:
           command: 
             - sh
             - -c
-            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server --http-port={{ .Values.connector.service.httpPort }} --sdn-port={{ .Values.connector.service.sdnPort }} --node-id={{ .Values.connector.nodeId }} connector --mq-uri={{ .Values.connector.mqUri }}
+            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server connector --mq-uri={{ .Values.connector.mqUri }}
           env:
             - name: RUST_LOG
               value: {{ .Values.connector.logLevel }}
+            - name: HTTP_PORT
+              value: {{ .Values.connector.service.httpPort | quote}}
+            - name: SDN_PORT
+              value: {{ .Values.connector.service.sdnPort | quote}}
+            - name: NODE_ID
+              value: {{ .Values.connector.nodeId | quote}}
+            {{- if .Values.secure.enabled }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+            {{- end }}
           volumeMounts:
             - name: seed-address
               mountPath: /etc/seed-address

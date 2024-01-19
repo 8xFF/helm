@@ -42,13 +42,23 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: 
-            - --http-port={{ .Values.gateway.service.httpPort }}
-            - --sdn-port={{ .Values.gateway.service.sdnPort }}
-            - --node-id={{ .Values.gateway.nodeId }}
             - gateway
           env:
             - name: RUST_LOG
               value: {{ .Values.gateway.logLevel }}
+            - name: HTTP_PORT
+              value: {{ .Values.gateway.service.httpPort | quote}}
+            - name: SDN_PORT
+              value: {{ .Values.gateway.service.sdnPort | quote }}
+            - name: NODE_ID
+              value: {{ .Values.gateway.nodeId | quote }}
+            {{- if .Values.secure.enabled }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.httpPort }}
