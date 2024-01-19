@@ -51,7 +51,7 @@ connector:
     sdnPort: 3011
 
 rtmp:
-  enabled: false
+  enabled: true
   nodeId: 3
   cpuRequest: 200m
   memoryRequest: 200Mi
