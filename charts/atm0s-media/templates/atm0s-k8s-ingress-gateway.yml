@@ -9,14 +9,15 @@ metadata:
 
 spec:
   ingressClassName: nginx
+  {{- if .Values.gateway.host }}
   tls:
   - hosts:
     - {{ .Values.gateway.host }}
     secretName: atm0s-gateway-cert
+  {{- end}}
 
   rules:
-  - host: {{ .Values.gateway.host }}
-    http:
+  - http:
       paths:
       - path: /gateway(/|$)(.*)
         pathType: Prefix
@@ -34,3 +35,6 @@ spec:
             port:
               name: http
       {{- end }}
+  {{- if .Values.gateway.host }}
+    host: {{ .Values.gateway.host }}
+  {{- end }}

@@ -2,9 +2,18 @@
 
 Thank you for installing {{ .Chart.Name }}
 
+Your server is available at:
+
+{{- if .Values.gateway.host }}
 - Gateway URL: https://{{ .Values.gateway.host }}/gateway
 {{ if .Values.secure.enabled }}
 - Authentication URL: https://{{ .Values.gateway.host }}/auth
+{{ end }}
+{{ else }}
+- Gateway URL: https://YOUR_INGRESS_IP/gateway
+{{ if .Values.secure.enabled }}
+- Authentication URL: https://YOUR_INGRESS_IP/auth
+{{ end }}
 {{ end }}
 
 You can join our Discord channel if you need further supports: https://discord.gg/9CrAZUrHse

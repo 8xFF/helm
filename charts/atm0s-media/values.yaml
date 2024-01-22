@@ -26,7 +26,7 @@ secure:
 gateway:
   nodeId: 1
   # The hostname of the gateway
-  host: gateway.local
+  # host: gateway.local
   cpuRequest: 50m
   memoryRequest: 100Mi
   logLevel: "info"

@@ -6,7 +6,7 @@ Atm0s Media Stack Helm chart for Kubernetes
 
 Atm0s Media Stack installs the following
 
-- Atm0s pods: Gateway, Connector, Webrtc, RTMP
+- Atm0s pods: Gateway, Connector, Webrtc, RTMP, Token Generator
 - Nats pod
 
 ## Prerequisites
