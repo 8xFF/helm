@@ -1,3 +1,10 @@
+
+
 Thank you for installing {{ .Chart.Name }}
+
+- Gateway URL: https://{{ .Values.gateway.host }}/gateway
+{{ if .Values.secure.enabled }}
+- Authentication URL: https://{{ .Values.gateway.host }}/auth
+{{ end }}
 
 You can join our Discord channel if you need further supports: https://discord.gg/9CrAZUrHse
