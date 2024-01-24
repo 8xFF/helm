@@ -7,9 +7,6 @@ image:
   tag: "master"
   pullPolicy: "Always"
 
-# You must provide a valid seed node address before enabling any other node
-# seedAddr: "0@/ip4/192.168.65.3/udp/3001/ip4/192.168.65.3/tcp/3001"
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -19,10 +16,17 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# Cluster secret for the media server
+# If disabled, the media server will use the default key "insecure"
+# Enable this will spin up a token generator server
+secure:
+  enabled: true
+  secret: "supersecret"
+
 gateway:
-  nodeId: 0
+  nodeId: 1
   # The hostname of the gateway
-  host: gateway.local
+  # host: gateway.local
   cpuRequest: 50m
   memoryRequest: 100Mi
   logLevel: "info"
@@ -31,8 +35,8 @@ gateway:
     sdnPort: 3001
 
 connector:
-  enabled: false
-  nodeId: 1
+  enabled: true
+  nodeId: 2
   cpuRequest: 50m
   memoryRequest: 100Mi
   # The NATS URI to connect to
@@ -47,10 +51,10 @@ connector:
     sdnPort: 3011
 
 rtmp:
-  enabled: false
-  nodeId: 2
+  enabled: true
+  nodeId: 3
   cpuRequest: 200m
-  memoryRequest: 500Mi
+  memoryRequest: 200Mi
   logLevel: "info"
 
   service:
@@ -58,12 +62,17 @@ rtmp:
     sdnPort: 3021
 
 webrtc:
-  enabled: false
-  nodeId: 3
+  enabled: true
+  nodeId: 4
   cpuRequest: 200m
-  memoryRequest: 500Mi
+  memoryRequest: 200Mi
   logLevel: "info"
 
   service:
     httpPort: 3030
     sdnPort: 3031
+
+annotations:
+  default: {
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  }

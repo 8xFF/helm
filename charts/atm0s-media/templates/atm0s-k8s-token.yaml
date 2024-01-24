@@ -1,0 +1,52 @@
+
+{{- if .Values.secure.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: token
+spec:
+  selector:
+    app: atm0s-media-token
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: http
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atm0s-media-token
+spec:
+  selector:
+    matchLabels:
+      app: atm0s-media-token
+  template:
+    metadata:
+      labels:
+        app: atm0s-media-token
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: atm0s-media-token 
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: 
+            - token-generate
+          env:
+            - name: RUST_LOG
+              value: {{ .Values.secure.logLevel }}
+            - name: HTTP_PORT
+              value: "4000"
+            - name: NODE_ID
+              value: "0"
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+          ports:
+            - name: http
+              containerPort: 4000
+              protocol: TCP
+{{- end }}

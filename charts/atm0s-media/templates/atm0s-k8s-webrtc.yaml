@@ -1,4 +1,3 @@
-{{- if .Values.seedAddr }}
 {{- if .Values.webrtc.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -13,21 +12,56 @@ spec:
       labels:
         app: atm0s-media-webrtc
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - am0s-media-webrtc
+            topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      initContainers:
+        - name: wait-seed-service
+          image: busybox
+          command: ['sh', '-c', "until nslookup gateway.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for gateway; sleep 2; done"]
+        - name: seed-service
+          image: busybox
+          command: ["/bin/sh", "-c", "wget -q -O - http://gateway:3000/node-info/ | grep -o '\"address\":\"[^\"]*\"' | sed 's/\"address\":\"\\(.*\\)\"/\\1/' > /etc/seed-address/address"]
+          volumeMounts:
+            - name: seed-address
+              mountPath: /etc/seed-address
       containers:
-        - name: atm0s-media-webrtc 
+        - name: atm0s-media-webrtc
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-            - --seeds={{ .Values.seedAddr }}
-            - --http-port={{ .Values.webrtc.service.httpPort }}
-            - --sdn-port={{ .Values.webrtc.service.sdnPort }}
-            - --node-id={{ .Values.webrtc.nodeId}}
-            - webrtc          
+          command: 
+            - sh
+            - -c
+            - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server  webrtc
+          volumeMounts:
+            - name: seed-address
+              mountPath: /etc/seed-address
+              readOnly: true
           env: 
             - name: RUST_LOG
               value: {{ .Values.webrtc.logLevel }}
+            - name: HTTP_PORT
+              value: {{ .Values.webrtc.service.httpPort | quote}}
+            - name: SDN_PORT
+              value: {{ .Values.webrtc.service.sdnPort| quote }}
+            - name: NODE_ID
+              value: {{ .Values.webrtc.nodeId | quote}}
+            {{- if .Values.secure.enabled }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.webrtc.service.httpPort }}
@@ -35,15 +69,12 @@ spec:
             - name: sdn
               containerPort: {{ .Values.webrtc.service.sdnPort }}
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /node-info/
-          #     port: http
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 5
           resources:
             requests:
               cpu: {{ .Values.webrtc.cpuRequest }}
               memory: {{ .Values.webrtc.memoryRequest }}
+      volumes:
+        - name: seed-address
+          emptyDir:
+            sizeLimit: 1Mi
 {{- end}}      
-{{- end}}

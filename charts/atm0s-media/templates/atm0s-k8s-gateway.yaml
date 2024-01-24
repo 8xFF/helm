@@ -8,7 +8,7 @@ spec:
     app: atm0s-media-gateway
   ports:
     - protocol: TCP
-      port: 3000  
+      port: {{ .Values.gateway.service.httpPort }}
       targetPort: http
       name: http
 ---
@@ -25,6 +25,16 @@ spec:
       labels:
         app: atm0s-media-gateway
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - am0s-media-gateway
+            topologyKey: "kubernetes.io/hostname"
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
@@ -32,13 +42,23 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: 
-            - --http-port={{ .Values.gateway.service.httpPort }}
-            - --sdn-port={{ .Values.gateway.service.sdnPort }}
-            - --node-id={{ .Values.gateway.nodeId }}
             - gateway
           env:
             - name: RUST_LOG
               value: {{ .Values.gateway.logLevel }}
+            - name: HTTP_PORT
+              value: {{ .Values.gateway.service.httpPort | quote}}
+            - name: SDN_PORT
+              value: {{ .Values.gateway.service.sdnPort | quote }}
+            - name: NODE_ID
+              value: {{ .Values.gateway.nodeId | quote }}
+            {{- if .Values.secure.enabled }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: atm0s-cluster-secret
+                  key: secret
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.gateway.service.httpPort }}
@@ -46,12 +66,6 @@ spec:
             - name: sdn
               containerPort: {{ .Values.gateway.service.sdnPort }}
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /node-info/
-          #     port: http
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 5
           resources:
             requests:
               cpu: {{ .Values.gateway.cpuRequest }}
