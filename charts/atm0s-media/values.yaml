@@ -4,7 +4,7 @@
 
 image:
   repository: "ghcr.io/8xff/atm0s-media-server"
-  tag: "master"
+  tag: "atm0s-media-server-v0.1.2"
   pullPolicy: "Always"
 
 serviceAccount:

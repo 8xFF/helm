@@ -56,7 +56,7 @@ spec:
             - name: NODE_ID
               value: {{ .Values.rtmp.nodeId| quote }}
             {{- if .Values.secure.enabled }}
-            - name: TOKEN
+            - name: SECRET
               valueFrom:
                 secretKeyRef:
                   name: atm0s-cluster-secret

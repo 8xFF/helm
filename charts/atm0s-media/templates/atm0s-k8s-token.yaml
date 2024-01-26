@@ -40,7 +40,7 @@ spec:
               value: "4000"
             - name: NODE_ID
               value: "0"
-            - name: TOKEN
+            - name: SECRET
               valueFrom:
                 secretKeyRef:
                   name: atm0s-cluster-secret

@@ -53,7 +53,7 @@ spec:
             - name: NODE_ID
               value: {{ .Values.gateway.nodeId | quote }}
             {{- if .Values.secure.enabled }}
-            - name: TOKEN
+            - name: SECRET
               valueFrom:
                 secretKeyRef:
                   name: atm0s-cluster-secret
