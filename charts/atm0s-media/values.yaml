@@ -20,8 +20,8 @@ serviceAccount:
 # If disabled, the media server will use the default key "insecure"
 # Enable this will spin up a token generator server
 secure:
-  enabled: true
-  secret: "supersecret"
+  enabled: false
+  secret: "insecure"
 
 gateway:
   nodeId: 1
