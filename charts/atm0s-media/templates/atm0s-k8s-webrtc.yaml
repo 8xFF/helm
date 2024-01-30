@@ -7,6 +7,8 @@ spec:
   selector:
     matchLabels:
       app: atm0s-media-webrtc
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

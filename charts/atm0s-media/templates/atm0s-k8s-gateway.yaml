@@ -20,6 +20,8 @@ spec:
   selector:
     matchLabels:
       app: atm0s-media-gateway
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

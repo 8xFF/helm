@@ -7,6 +7,8 @@ spec:
   selector:
     matchLabels:
       app: atm0s-media-connector
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

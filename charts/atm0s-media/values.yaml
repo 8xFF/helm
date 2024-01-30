@@ -53,8 +53,8 @@ connector:
 rtmp:
   enabled: true
   nodeId: 3
-  cpuRequest: 200m
-  memoryRequest: 200Mi
+  cpuRequest: 500m
+  memoryRequest: 100Mi
   logLevel: "info"
 
   service:
@@ -64,8 +64,8 @@ rtmp:
 webrtc:
   enabled: true
   nodeId: 4
-  cpuRequest: 200m
-  memoryRequest: 200Mi
+  cpuRequest: 500m
+  memoryRequest: 100Mi
   logLevel: "info"
 
   service:
