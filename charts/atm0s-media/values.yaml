@@ -28,7 +28,7 @@ gateway:
   # The hostname of the gateway
   # host: gateway.local
   cpuRequest: 50m
-  memoryRequest: 100Mi
+  memoryRequest: 30Mi
   logLevel: "info"
   service:
     httpPort: 3000
@@ -38,7 +38,7 @@ connector:
   enabled: true
   nodeId: 2
   cpuRequest: 50m
-  memoryRequest: 100Mi
+  memoryRequest: 30Mi
   # The NATS URI to connect to
   # This defaulted to the NATS server deployed with the chart
   # If you are using a different NATS server, you must set this value for connector to work, and disable innerNats
