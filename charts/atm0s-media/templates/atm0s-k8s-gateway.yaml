@@ -46,6 +46,8 @@ spec:
           args: 
             - gateway
           env:
+            - name: SDN_ZONE
+              value: {{ .Values.zone | quote}}
             - name: RUST_LOG
               value: {{ .Values.gateway.logLevel }}
             - name: HTTP_PORT

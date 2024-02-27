@@ -49,6 +49,8 @@ spec:
               mountPath: /etc/seed-address
               readOnly: true
           env: 
+            - name: SDN_ZONE
+              value: {{ .Values.zone | quote}}
             - name: RUST_LOG
               value: {{ .Values.webrtc.logLevel }}
             - name: HTTP_PORT

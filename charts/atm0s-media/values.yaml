@@ -7,6 +7,10 @@ image:
   tag: "master"
   pullPolicy: "Always"
 
+# The zone to deploy the media server cluster, if you are using a single node cluster, you can ignore this
+# zone: "us-central1-a"
+zone: "local"
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

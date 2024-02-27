@@ -46,6 +46,8 @@ spec:
             - -c
             - exec env SEEDS="$(cat /etc/seed-address/address)" /atm0s-media-server connector --mq-uri={{ .Values.connector.mqUri }}
           env:
+            - name: SDN_ZONE
+              value: {{ .Values.zone | quote}}
             - name: RUST_LOG
               value: {{ .Values.connector.logLevel }}
             - name: HTTP_PORT
